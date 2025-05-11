@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.flightlogic.co.ke</groupId>
-    <artifactId>hayaan</artifactId>
+    <artifactId>hayaanapi</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>hayaan</name>
+    <name>hayaanapi</name>
     <description>This is a middle ware that intergrates to Flight logic API </description>
     <properties>
         <java.version>1.8</java.version>
@@ -94,7 +94,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>hayaan</finalName>  
+        <finalName>hayaanapi</finalName>  
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

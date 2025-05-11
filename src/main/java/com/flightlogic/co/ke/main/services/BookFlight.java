@@ -76,6 +76,7 @@ public class BookFlight {
 
                 if (!adultArray.isJsonNull()) {
                     JsonArray titleArray = new JsonArray();
+                    JsonArray frequentFlyrNumArray = new JsonArray();
                     JsonArray firstNameArray = new JsonArray();
                     JsonArray lastNameArray = new JsonArray();
                     JsonArray dobArray = new JsonArray();
@@ -86,6 +87,10 @@ public class BookFlight {
 
                     for (JsonElement adult : adultArray) {
                         JsonObject adultObject = adult.getAsJsonObject();
+
+                        if (adultObject.has("frequentFlyrNum")) {
+                            frequentFlyrNumArray.add(adultObject.get("frequentFlyrNum").getAsString());
+                        }
 
                         titleArray.add(adultObject.get("title").getAsString());
                         firstNameArray.add(adultObject.get("firstName").getAsString());
@@ -106,12 +111,15 @@ public class BookFlight {
                     adultDetails.add("passportNo", passportNoArray);
                     adultDetails.add("passportIssueCountry", passportIssueCountryArray);
                     adultDetails.add("passportExpiryDate", passportExpiryDateArray);
+                    adultDetails.add("frequentFlyrNum", frequentFlyrNumArray);
+
                     adultObjectDetails.add("adult", adultDetails);
                     // adultDetails
                     // paxDetails.add(adultObjectDetails);
                 }
 
                 if (!childArray.isJsonNull()) {
+                    JsonArray frequentFlyrNumArray = new JsonArray();
                     JsonArray childtitleArray = new JsonArray();
                     JsonArray childfirstNameArray = new JsonArray();
                     JsonArray childlastNameArray = new JsonArray();
@@ -123,6 +131,10 @@ public class BookFlight {
 
                     for (JsonElement child : childArray) {
                         JsonObject childObject = child.getAsJsonObject();
+
+                        if (childObject.has("frequentFlyrNum")) {
+                            frequentFlyrNumArray.add(childObject.get("frequentFlyrNum").getAsString());
+                        }
 
                         childtitleArray.add(childObject.get("title").getAsString());
                         childfirstNameArray.add(childObject.get("firstName").getAsString());
@@ -143,11 +155,14 @@ public class BookFlight {
                     childDetails.add("passportNo", childpassportNoArray);
                     childDetails.add("passportIssueCountry", childpassportIssueCountryArray);
                     childDetails.add("passportExpiryDate", childpassportExpiryDateArray);
+                    childDetails.add("frequentFlyrNum", frequentFlyrNumArray);
+
                     adultObjectDetails.add("child", childDetails);
                     //paxDetails.add(adultObjectDetails);
                 }
 
                 if (!infantArray.isJsonNull()) {
+                    JsonArray frequentFlyrNumArray = new JsonArray();
                     JsonArray infanttitleArray = new JsonArray();
                     JsonArray infantfirstNameArray = new JsonArray();
                     JsonArray infantlastNameArray = new JsonArray();
@@ -159,6 +174,10 @@ public class BookFlight {
 
                     for (JsonElement infant : infantArray) {
                         JsonObject infantObject = infant.getAsJsonObject();
+
+                        if (infantObject.has("frequentFlyrNum")) {
+                            frequentFlyrNumArray.add(infantObject.get("frequentFlyrNum").getAsString());
+                        }
 
                         infanttitleArray.add(infantObject.get("title").getAsString());
                         infantfirstNameArray.add(infantObject.get("firstName").getAsString());
@@ -179,6 +198,7 @@ public class BookFlight {
                     infantDetails.add("passportNo", infantpassportNoArray);
                     infantDetails.add("passportIssueCountry", infantpassportIssueCountryArray);
                     infantDetails.add("passportExpiryDate", infantpassportExpiryDateArray);
+                    infantDetails.add("frequentFlyrNum", frequentFlyrNumArray);
                     adultObjectDetails.add("infant", infantDetails);
                     //paxDetails.add(infantObjectDetails);
                 }
@@ -196,7 +216,7 @@ public class BookFlight {
             loggger.info("BOOK FLIGHT REQUEST MODIFIED  |  " + requestJson);
             responseObject = utility.flightLogicRequest(requestJson, url);
             loggger.info("BOOK FLIGHT RESPONSE  |  " + responseObject);
-            if (responseObject.has("errors")) {
+            if (responseObject.has("errors") || responseObject.has("Errors")) {
 
                 return responseObject;
             }

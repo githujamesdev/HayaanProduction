@@ -13,6 +13,7 @@ import com.flightlogic.co.ke.main.services.FlightAvailability;
 import com.flightlogic.co.ke.main.services.ValidateFare;
 import com.flightlogic.co.ke.main.services.BookFlight;
 import com.flightlogic.co.ke.main.services.OrderTicket;
+import com.flightlogic.co.ke.main.services.ReissueDetails;
 import com.flightlogic.co.ke.main.services.TripDetails;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.flightlogic.co.ke.main.utilities.Dbfunctions;
+//import com.flightlogic.co.ke.main.utilities.Dbfunctions;
 import com.flightlogic.co.ke.main.utilities.Httpcall;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonSyntaxException;
@@ -64,8 +65,9 @@ public class FlightLogicController {
     TripDetails trip = new TripDetails();
     AirlineList airline = new AirlineList();
 
-    @Autowired
-    private Dbfunctions dbfunctions;
+     ReissueDetails reissue = new ReissueDetails();
+//    @Autowired
+//    private Dbfunctions dbfunctions;
 
     @Value("${flight.user_id}")
     private String user_id;
@@ -113,6 +115,13 @@ public class FlightLogicController {
 
     @Value("${flight.void_quote}")
     String void_quote;
+    
+        //new end points 
+    @Value("${flight.reissue_quote}")
+    String reissue_ticket_quote;
+
+    @Value("${flight.reissue_ticket}")
+    String reissue_ticket;
 
     @Autowired
     public FlightLogicController(NationRepository nationRepository) {
@@ -143,7 +152,7 @@ public class FlightLogicController {
 
             switch (action) {
                 case "FlightAvailability":
-                    response = flight.flightAvailabilitySearch(request, post_url, credentials);
+                    response = flight.flightAvailabilitySearch(request, "https://travelnext.works/api/aeroVE5-prod/availability", credentials);
                     break;
                 case "ValidateFare":
                     response = fare.validateFare(request, validate_fare, credentials);
@@ -178,21 +187,32 @@ public class FlightLogicController {
                     response = trip.postTicketStatus(request, post_ticket_status, credentials);
                     break;
                 case "VoidQuote":
-                    response = trip.postTicketStatus(request, post_ticket_status, credentials);
+                    response = trip.voidQuote(request, void_quote, credentials);
+                    break;
+                    
+                //NEWEND POINTS
+                case "ReissueQuote":
+                    response = reissue.reissueQuote(request, reissue_ticket_quote, credentials);
+                    break;
+                case "ReissueTicket":
+                    response = reissue.reissueTicket(request, reissue_ticket, credentials);
                     break;
                 case "NationalCodes":
                     // Retrieve airport data from the database
                     List<Nation> nationData = nationRepository.findAll();
                     JsonArray nationList = new JsonArray();
-                    for (Nation nation : nationData) {
+                    nationData.stream().map(nation -> {
                         JsonObject airportJson = new JsonObject();
                         airportJson.addProperty("nationcode", nation.getNationCode());
                         airportJson.addProperty("nationname", nation.getNationName());
-                        nationList.add(airportJson);
-                    }
+                    return airportJson;
+                }).forEachOrdered(airportJson -> {
+                    nationList.add(airportJson);
+                });
 
                     response.add("nations", nationList);
                     break;
+
             }
 
         } catch (JsonSyntaxException ex) {
@@ -258,8 +278,32 @@ public class FlightLogicController {
                     response = trip.postTicketStatus(request, post_ticket_status, credentials);
                     break;
                 case "VoidQuote":
-                    response = trip.postTicketStatus(request, post_ticket_status, credentials);
+                    response = trip.voidQuote(request, void_quote, credentials);
                     break;
+                    
+                      //NEWEND POINTS
+                case "ReissueQuote":
+                    response = reissue.reissueQuote(request, reissue_ticket_quote, credentials);
+                    break;
+                case "ReissueTicket":
+                    response = reissue.reissueTicket(request, reissue_ticket, credentials);
+                    break;
+                case "NationalCodes":
+                    // Retrieve airport data from the database
+                    List<Nation> nationData = nationRepository.findAll();
+                    JsonArray nationList = new JsonArray();
+                    nationData.stream().map(nation -> {
+                        JsonObject airportJson = new JsonObject();
+                        airportJson.addProperty("nationcode", nation.getNationCode());
+                        airportJson.addProperty("nationname", nation.getNationName());
+                    return airportJson;
+                }).forEachOrdered(airportJson -> {
+                    nationList.add(airportJson);
+                });
+
+                    response.add("nations", nationList);
+                    break;
+
 
             }
 
